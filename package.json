@@ -1,0 +1,41 @@
+{
+  "name": "iosoccer-apuestas-bot",
+  "version": "1.0.0",
+  "description": "Bot de Discord para apuestas de IOSoccer con interfaz web",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "dev": "nodemon bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "discord.js": "^14.21.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.17.0",
+    "passport": "^0.6.0",
+    "passport-discord": "^0.1.4",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "apuestas",
+    "iosoccer",
+    "express",
+    "websocket"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
