@@ -1592,28 +1592,57 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: "*", methods: ["GET", "POST"] } });
 
+// Configuración de URL de callback
+const getCallbackURL = () => {
+    if (process.env.NODE_ENV === 'production' && process.env.PRODUCTION_URL) {
+        return `${process.env.PRODUCTION_URL}/auth/discord/callback`;
+    }
+    return 'http://localhost:3000/auth/discord/callback';
+};
+
+console.log('🔧 Configuración OAuth Discord:');
+console.log('  - Client ID:', process.env.DISCORD_CLIENT_ID);
+console.log('  - Callback URL:', getCallbackURL());
+console.log('  - Environment:', process.env.NODE_ENV || 'development');
+
 // Configuración Passport
 passport.use(new DiscordStrategy({
     clientID: process.env.DISCORD_CLIENT_ID,
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
-    callbackURL: process.env.NODE_ENV === 'production'
-        ? `${process.env.PRODUCTION_URL}/auth/discord/callback`
-        : 'http://localhost:3000/auth/discord/callback',
-    scope: ['identify', 'guilds']
+    callbackURL: getCallbackURL(),
+    scope: ['identify']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        console.log('✅ Usuario autenticado desde Discord:', profile.username);
-        await initUser(profile.id, profile.username, profile.discriminator, profile.avatar);
-        const userProfile = {
+        console.log('✅ Usuario autenticado desde Discord:', profile.username || 'Sin username');
+        console.log('🔍 Profile ID:', profile.id);
+        console.log('📋 Profile data:', {
             id: profile.id,
             username: profile.username,
             discriminator: profile.discriminator,
             avatar: profile.avatar,
+            verified: profile.verified
+        });
+        
+        // Verificar que tenemos los datos mínimos necesarios
+        if (!profile.id) {
+            throw new Error('Profile ID missing from Discord response');
+        }
+        
+        await initUser(profile.id, profile.username, profile.discriminator, profile.avatar);
+        
+        const userProfile = {
+            id: profile.id,
+            username: profile.username || 'Usuario',
+            discriminator: profile.discriminator || '0000',
+            avatar: profile.avatar,
             accessToken: accessToken
         };
+        
+        console.log('👤 UserProfile creado exitosamente:', userProfile.username);
         return done(null, userProfile);
     } catch (error) {
         console.error('❌ Error en estrategia Discord:', error);
+        console.error('❌ Error stack:', error.stack);
         return done(error, null);
     }
 }));
@@ -1719,8 +1748,17 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 app.get('/dashboard', requireAuth, (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/api/auth/status', async (req, res) => {
     try {
+        console.log('🔍 Verificando estado de autenticación...');
+        console.log('isAuthenticated:', req.isAuthenticated());
+        console.log('req.user:', req.user);
+        console.log('session:', req.session);
+        
         if (req.isAuthenticated() && req.user) {
-            if (!userData[req.user.id]) { await initUser(req.user.id, req.user.username, req.user.discriminator, req.user.avatar); }
+            console.log('✅ Usuario autenticado encontrado:', req.user.id);
+            if (!userData[req.user.id]) { 
+                console.log('⚠️ Usuario no encontrado en userData, inicializando...');
+                await initUser(req.user.id, req.user.username, req.user.discriminator, req.user.avatar); 
+            }
             const user = userData[req.user.id];
             const responseData = {
                 authenticated: true,
@@ -1736,9 +1774,16 @@ app.get('/api/auth/status', async (req, res) => {
                     totalWinnings: user.totalWinnings || 0
                 }
             };
+            console.log('📤 Enviando datos de usuario:', responseData);
             res.json(responseData);
-        } else { res.json({ authenticated: false }); }
-    } catch (error) { console.error('❌ Error verificando estado:', error); res.json({ authenticated: false, error: error.message }); }
+        } else { 
+            console.log('❌ Usuario no autenticado');
+            res.json({ authenticated: false }); 
+        }
+    } catch (error) { 
+        console.error('❌ Error verificando estado:', error); 
+        res.json({ authenticated: false, error: error.message }); 
+    }
 });
 
 app.get('/api/admin/check', requireAuth, (req, res) => {
