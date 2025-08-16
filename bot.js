@@ -24,7 +24,16 @@ const cors = require('cors');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+// Importación defensiva de connect-mongo
+let MongoStore;
+try {
+    MongoStore = require('connect-mongo');
+    console.log('✅ connect-mongo cargado exitosamente');
+} catch (error) {
+    console.error('❌ Error cargando connect-mongo:', error.message);
+    console.error('💡 Ejecuta: npm install connect-mongo');
+    process.exit(1);
+}
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
