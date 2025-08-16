@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Autenticación</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background-color: #2c2f33;
+            color: #ffffff;
+        }
+        .button {
+            background-color: #7289da;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .error { color: #f04747; }
+        .success { color: #43b581; }
+        .info { color: #faa61a; }
+        .test-result {
+            background-color: #36393f;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Prueba de Autenticación Discord</h1>
+    
+    <div id="status" class="test-result">
+        <h3>Estado actual: <span id="auth-status">Verificando...</span></h3>
+        <div id="user-info"></div>
+    </div>
+    
+    <div class="test-result">
+        <h3>Acciones disponibles:</h3>
+        <a href="/auth/discord" class="button">🔐 Iniciar Sesión con Discord</a>
+        <a href="/logout" class="button">🚪 Cerrar Sesión</a>
+        <button onclick="checkAuthStatus()" class="button">🔄 Verificar Estado</button>
+        <button onclick="testEndpoint()" class="button">🧪 Probar Endpoint</button>
+    </div>
+    
+    <div id="test-results" class="test-result">
+        <h3>Resultados de las pruebas:</h3>
+        <div id="test-output"></div>
+    </div>
+    
+    <div class="test-result">
+        <h3>Debug Info:</h3>
+        <div id="debug-info">
+            <p><strong>URL actual:</strong> <span id="current-url"></span></p>
+            <p><strong>Cookies:</strong> <span id="cookies-info"></span></p>
+            <p><strong>Timestamp:</strong> <span id="timestamp"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function updateDebugInfo() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('cookies-info').textContent = document.cookie || 'Sin cookies';
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        }
+        
+        async function checkAuthStatus() {
+            const outputDiv = document.getElementById('test-output');
+            outputDiv.innerHTML = '<p class="info">⏳ Verificando estado de autenticación...</p>';
+            
+            try {
+                const response = await fetch('/api/auth/status', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                const statusSpan = document.getElementById('auth-status');
+                const userInfoDiv = document.getElementById('user-info');
+                
+                if (data.authenticated) {
+                    statusSpan.textContent = '✅ Autenticado';
+                    statusSpan.className = 'success';
+                    userInfoDiv.innerHTML = `
+                        <p><strong>Usuario:</strong> ${data.user.username}#${data.user.discriminator}</p>
+                        <p><strong>ID:</strong> ${data.user.id}</p>
+                        <p><strong>Balance:</strong> $${data.user.balance}</p>
+                    `;
+                    outputDiv.innerHTML = '<p class="success">✅ Estado: Usuario autenticado correctamente</p>';
+                } else {
+                    statusSpan.textContent = '❌ No autenticado';
+                    statusSpan.className = 'error';
+                    userInfoDiv.innerHTML = '<p>No hay información de usuario disponible</p>';
+                    outputDiv.innerHTML = '<p class="error">❌ Estado: Usuario no autenticado</p>';
+                }
+                
+                outputDiv.innerHTML += `
+                    <p><strong>Respuesta completa:</strong></p>
+                    <pre style="background: #23272a; padding: 10px; border-radius: 3px; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                document.getElementById('auth-status').textContent = '⚠️ Error';
+                document.getElementById('auth-status').className = 'error';
+                outputDiv.innerHTML = `<p class="error">❌ Error al verificar autenticación: ${error.message}</p>`;
+            }
+            
+            updateDebugInfo();
+        }
+        
+        async function testEndpoint() {
+            const outputDiv = document.getElementById('test-output');
+            outputDiv.innerHTML = '<p class="info">⏳ Probando conectividad con el servidor...</p>';
+            
+            try {
+                // Probar conectividad básica
+                const pingResponse = await fetch('/api/auth/status', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const responseText = await pingResponse.text();
+                
+                outputDiv.innerHTML = `
+                    <p class="info">📡 Respuesta del servidor:</p>
+                    <p><strong>Status Code:</strong> ${pingResponse.status}</p>
+                    <p><strong>Headers:</strong> ${JSON.stringify(Object.fromEntries(pingResponse.headers.entries()), null, 2)}</p>
+                    <pre style="background: #23272a; padding: 10px; border-radius: 3px; overflow-x: auto;">${responseText}</pre>
+                `;
+                
+            } catch (error) {
+                outputDiv.innerHTML = `<p class="error">❌ Error de conectividad: ${error.message}</p>`;
+            }
+            
+            updateDebugInfo();
+        }
+        
+        // Verificar estado al cargar la página
+        window.onload = () => {
+            checkAuthStatus();
+            updateDebugInfo();
+            
+            // Verificar si hay parámetros de error en la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error) {
+                const outputDiv = document.getElementById('test-output');
+                outputDiv.innerHTML = `<p class="error">⚠️ Error detectado en URL: ${error}</p>`;
+            }
+        };
+    </script>
+</body>
+</html>

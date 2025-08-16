@@ -1,0 +1,101 @@
+/* Checkbox Fix Styles */
+.checkbox-option {
+    display: block;
+    cursor: pointer;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.checkbox-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.checkbox-option input[type="checkbox"] {
+    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    vertical-align: middle;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-option span {
+    cursor: pointer;
+    vertical-align: middle;
+    user-select: none;
+    display: inline-block;
+}
+
+.checkbox-option input[type="checkbox"]:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Label fix to make entire area clickable */
+label.checkbox-option {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+}
+
+label.checkbox-option input[type="checkbox"] {
+    flex-shrink: 0;
+}
+
+label.checkbox-option span {
+    flex-grow: 1;
+}
+
+/* Special events grid */
+.special-events .checkbox-option {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 200px;
+}
+
+.checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.checkbox-grid.special-events {
+    margin: 1rem 0;
+}
+
+/* Form row for red cards */
+.form-row .form-group label.checkbox-option {
+    margin-bottom: 0;
+    width: auto;
+}
+
+/* Variables for colors */
+:root {
+    --primary-color: #00ff88;
+    --primary-color-rgb: 0, 255, 136;
+    --success-color: #00ff88;
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Draw result styling */
+.draw-result {
+    color: #ffd700;
+    font-weight: 600;
+}
+
+/* Enhanced history card with better gradient */
+.history-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+}
+
+.history-card:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+}

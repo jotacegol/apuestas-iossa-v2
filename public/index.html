@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IOSoccer Bets - Tu Casa de Apuestas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="history.css">
+    <link rel="stylesheet" href="checkbox-fix.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-bg"></div>
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
+    <header class="glass-header">
+        <div class="container">
+            <div class="logo-wrapper">
+                <h1 class="logo">
+                    <span class="logo-icon">⚽</span>
+                    <span class="logo-text">IOSoccer <span class="gradient-text">Bets</span></span>
+                </h1>
+            </div>
+            <nav class="main-navigation">
+                <ul class="main-nav">
+                    <li>
+                        <a href="#" id="nav-profile" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <span>Perfil</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-matches" class="nav-link active">
+                            <i class="fas fa-trophy"></i>
+                            <span>Partidos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-betting" class="nav-link">
+                            <i class="fas fa-coins"></i>
+                            <span>Apostar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-finished-matches" class="nav-link">
+                            <i class="fas fa-history"></i>
+                            <span>Historial</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-leaderboard" class="nav-link">
+                            <i class="fas fa-crown"></i>
+                            <span>Ranking</span>
+                        </a>
+                    </li>
+                    <li id="admin-nav-item" style="display: none;">
+                        <a href="#" id="nav-admin" class="nav-link">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <div class="user-status" id="auth-status">Cargando...</div>
+                <button id="auth-button" class="btn btn-glow btn-primary">
+                    <i class="fab fa-discord"></i>
+                    <span>Conectar Discord</span>
+                </button>
+                <button id="logout-button" class="btn btn-glass" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Salir</span>
+                </button>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Profile Section -->
+        <section id="profile-section" class="content-section glass-card">
+            <h2 class="section-title">
+                <i class="fas fa-user-circle"></i>
+                Mi Perfil
+            </h2>
+            <div class="profile-summary">
+                <div class="profile-header-card">
+                    <div class="profile-avatar-wrapper">
+                        <div class="avatar-glow"></div>
+                        <img id="profile-user-avatar" src="" alt="Avatar" class="profile-avatar-img">
+                        <div class="profile-level">Nivel 1</div>
+                    </div>
+                    <h3 id="profile-username" class="profile-username"></h3>
+                    <div class="profile-badges">
+                        <span class="badge badge-vip">VIP</span>
+                        <span class="badge badge-streak">🔥 5 días</span>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Balance Actual</h3>
+                            <p id="profile-balance" class="stat-value">0 💰</p>
+                        </div>
+                        <div class="stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i> 12%
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon">
+                            <i class="fas fa-dice"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Apuestas Totales</h3>
+                            <p id="profile-total-bets" class="stat-value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon icon-success">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Apuestas Ganadas</h3>
+                            <p id="profile-won-bets" class="stat-value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon icon-danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Apuestas Perdidas</h3>
+                            <p id="profile-lost-bets" class="stat-value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon icon-gold">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Ganancias Netas</h3>
+                            <p id="profile-net-winnings" class="stat-value">0 💰</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon icon-info">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Tasa de Éxito</h3>
+                            <p id="profile-win-rate" class="stat-value">0%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3 class="subsection-title">
+                <i class="fas fa-history"></i>
+                Mis Últimas Apuestas
+            </h3>
+            <div id="my-bets-list" class="my-bets-list">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Cargando tus apuestas...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matches Section -->
+        <section id="matches-section" class="content-section glass-card active">
+            <h2 class="section-title">
+                <i class="fas fa-trophy"></i>
+                Partidos Próximos
+            </h2>
+            <div class="matches-filters">
+                <button class="filter-btn active">Todos</button>
+                <button class="filter-btn">Hoy</button>
+                <button class="filter-btn">Esta Semana</button>
+                <button class="filter-btn">Favoritos</button>
+            </div>
+            <div id="upcoming-matches-list" class="matches-grid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Cargando partidos...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Betting Section -->
+        <section id="betting-section" class="content-section glass-card">
+            <h2 class="section-title">
+                <i class="fas fa-coins"></i>
+                Realizar Apuesta
+            </h2>
+            <div class="betting-controls">
+                <label for="bet-match-select">Selecciona un Partido:</label>
+                <select id="bet-match-select" class="form-control">
+                    <option value="">-- Selecciona --</option>
+                </select>
+            </div>
+
+            <div id="selected-match-details" class="match-details-card" style="display: none;">
+                <h3>Detalles del Partido</h3>
+                <p><strong>ID:</strong> <span id="bet-match-id"></span></p>
+                <p><strong>Equipos:</strong> <span id="bet-match-teams"></span></p>
+                <p><strong>Hora:</strong> <span id="bet-match-time"></span></p>
+
+                <!-- Mover el tipo de apuesta aquí -->
+                <div class="bet-form">
+                    <div class="form-group">
+                        <label for="bet-type-select">Tipo de Apuesta:</label>
+                        <select id="bet-type-select" class="form-control">
+                            <option value="simple">Resultado del Partido (1X2)</option>
+                            <option value="special_combined">Apuesta Especial Combinada</option>
+                        </select>
+                    </div>
+
+                    <!-- Contenedores para las cuotas, se mostrarán dinámicamente -->
+                    <div id="basic-odds-container" class="odds-grid" style="display: none;"></div>
+                    <!-- El contenedor de special-odds-container ahora contendrá las categorías -->
+                    <div id="special-odds-container" style="display: none;"></div>
+                    <div id="special-combined-checkboxes" class="checkbox-grid" style="display: none;"></div>
+
+
+                    <div id="simple-bet-options" class="form-group bet-option-group">
+                        <label for="simple-prediction">Tu Predicción:</label>
+                        <select id="simple-prediction" class="form-control">
+                            <!-- Options will be loaded here -->
+                        </select>
+                        <p>Cuota seleccionada: <span id="simple-selected-odds">N/A</span></p>
+                    </div>
+
+                    <div id="special-bet-options" class="form-group bet-option-group" style="display: none;">
+                        <label for="special-type-select">Tipo de Apuesta Especial:</label>
+                        <select id="special-type-select" class="form-control">
+                            <!-- Options will be loaded here -->
+                        </select>
+                        <p>Cuota seleccionada: <span id="special-selected-odds">N/A</span></p>
+                    </div>
+
+                    <div id="special-combined-bet-options" class="form-group bet-option-group" style="display: none;">
+    <label>Selecciona las Apuestas Especiales que deseas combinar:</label>
+    <div id="special-odds-container"></div>
+    <div class="combined-odds-display">
+        <p>Cuota Combinada: <span id="combined-selected-odds">N/A</span></p>
+        <p id="combined-selection-count">0 seleccionadas</p>
+    </div>
+</div>
+
+
+                    <div class="form-group">
+                        <label for="bet-amount">Cantidad a Apostar:</label>
+                        <input type="number" id="bet-amount" class="form-control" min="1" value="100">
+                    </div>
+                    <div class="calculator-display">
+                        Ganancia Potencial: <span id="potential-winnings">0 💰</span>
+                    </div>
+                    <button id="place-bet-button" class="btn btn-success">
+                        <span id="bet-button-text">Apostar</span>
+                        <div id="bet-button-spinner" class="button-spinner" style="display: none;">
+                            <div class="spinner-small"></div>
+                        </div>
+                    </button>
+                    <p id="bet-message" class="message"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finished Matches Section -->
+        <section id="finished-matches-section" class="content-section glass-card">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Últimos Partidos
+            </h2>
+            <div id="finished-matches-list" class="matches-grid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Cargando partidos terminados...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard-section" class="content-section glass-card">
+            <h2 class="section-title">
+                <i class="fas fa-crown"></i>
+                Clasificación de Usuarios
+            </h2>
+            <div class="leaderboard-podium">
+                <div class="podium-item second">
+                    <div class="podium-rank">2</div>
+                    <div class="podium-avatar">
+                        <img src="" alt="2nd" id="podium-2-avatar">
+                    </div>
+                    <div class="podium-name" id="podium-2-name">---</div>
+                    <div class="podium-score" id="podium-2-score">0</div>
+                </div>
+                <div class="podium-item first">
+                    <div class="podium-rank">1</div>
+                    <div class="podium-crown">👑</div>
+                    <div class="podium-avatar">
+                        <img src="" alt="1st" id="podium-1-avatar">
+                    </div>
+                    <div class="podium-name" id="podium-1-name">---</div>
+                    <div class="podium-score" id="podium-1-score">0</div>
+                </div>
+                <div class="podium-item third">
+                    <div class="podium-rank">3</div>
+                    <div class="podium-avatar">
+                        <img src="" alt="3rd" id="podium-3-avatar">
+                    </div>
+                    <div class="podium-name" id="podium-3-name">---</div>
+                    <div class="podium-score" id="podium-3-score">0</div>
+                </div>
+            </div>
+            <table id="leaderboard-table" class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Posición</th>
+                        <th>Usuario</th>
+                        <th>Balance</th>
+                        <th>Apuestas Ganadas</th>
+                        <th>Tasa de Éxito</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Leaderboard data will be loaded here -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Admin Section -->
+        <section id="admin-section" class="content-section glass-card">
+            <h2 class="section-title">
+                <i class="fas fa-user-shield"></i>
+                Panel de Administración
+            </h2>
+            
+            <!-- Match Results Management -->
+            <div class="admin-card glass-card-mini">
+                <h3 class="subsection-title">
+                    <i class="fas fa-trophy"></i>
+                    Gestión de Resultados de Partidos
+                </h3>
+                
+                <div class="admin-controls">
+                    <div class="form-group">
+                        <label for="admin-match-select">Seleccionar Partido:</label>
+                        <select id="admin-match-select" class="form-control">
+                            <option value="">-- Selecciona un partido --</option>
+                        </select>
+                    </div>
+                    
+                    <div id="admin-match-details" class="match-details-card" style="display: none;">
+                        <h4>Detalles del Partido</h4>
+                        <p><strong>ID:</strong> <span id="admin-match-id"></span></p>
+                        <p><strong>Equipos:</strong> <span id="admin-match-teams"></span></p>
+                        <p><strong>Hora:</strong> <span id="admin-match-time"></span></p>
+                        <p><strong>Apuestas:</strong> <span id="admin-match-bets-count">0</span></p>
+                        
+                        <div class="result-form">
+                            <h4>Establecer Resultado</h4>
+                            
+                            <div class="form-group">
+                                <label>Resultado del Partido:</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="admin-result" value="team1">
+                                        <span id="admin-team1-label">Equipo 1</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="admin-result" value="draw">
+                                        <span>Empate</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="admin-result" value="team2">
+                                        <span id="admin-team2-label">Equipo 2</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="admin-score1">Goles Equipo 1:</label>
+                                    <input type="number" id="admin-score1" class="form-control" min="0" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-score2">Goles Equipo 2:</label>
+                                    <input type="number" id="admin-score2" class="form-control" min="0" value="0">
+                                </div>
+                            </div>
+                            
+                            <h4>Eventos Especiales (Opcional)</h4>
+                            
+                            <div class="checkbox-grid special-events">
+                                <label class="checkbox-option" for="event-corner">
+                                    <input type="checkbox" id="event-corner" name="event-corner" value="corner">
+                                    <span>Gol de córner</span>
+                                </label>
+                                <label class="checkbox-option" for="event-libre">
+                                    <input type="checkbox" id="event-libre" name="event-libre" value="libre">
+                                    <span>Gol de tiro libre</span>
+                                </label>
+                                <label class="checkbox-option" for="event-chilena">
+                                    <input type="checkbox" id="event-chilena" name="event-chilena" value="chilena">
+                                    <span>Gol de chilena</span>
+                                </label>
+                                <label class="checkbox-option" for="event-cabeza">
+                                    <input type="checkbox" id="event-cabeza" name="event-cabeza" value="cabeza">
+                                    <span>Gol de cabeza</span>
+                                </label>
+                                <label class="checkbox-option" for="event-delantero">
+                                    <input type="checkbox" id="event-delantero" name="event-delantero" value="delantero">
+                                    <span>Gol de delantero</span>
+                                </label>
+                                <label class="checkbox-option" for="event-medio">
+                                    <input type="checkbox" id="event-medio" name="event-medio" value="medio">
+                                    <span>Gol de mediocampista</span>
+                                </label>
+                                <label class="checkbox-option" for="event-defensa">
+                                    <input type="checkbox" id="event-defensa" name="event-defensa" value="defensa">
+                                    <span>Gol de defensa</span>
+                                </label>
+                                <label class="checkbox-option" for="event-arquero">
+                                    <input type="checkbox" id="event-arquero" name="event-arquero" value="arquero">
+                                    <span>Gol de arquero</span>
+                                </label>
+                            </div>
+                            
+                            <h4>Estadísticas Adicionales (Opcional)</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="admin-corners">Córners totales:</label>
+                                    <input type="number" id="admin-corners" class="form-control" min="0" placeholder="Dejar vacío si no aplica">
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-yellow-cards">Tarjetas amarillas totales:</label>
+                                    <input type="number" id="admin-yellow-cards" class="form-control" min="0" placeholder="Dejar vacío si no aplica">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="admin-red-cards">Tarjetas rojas totales:</label>
+                                    <input type="number" id="admin-red-cards" class="form-control" min="0" placeholder="Dejar vacío si no aplica">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="admin-team1-yellow">Amarillas Equipo 1:</label>
+                                    <input type="number" id="admin-team1-yellow" class="form-control" min="0" placeholder="Opcional">
+                                </div>
+                                <div class="form-group">
+                                    <label for="admin-team2-yellow">Amarillas Equipo 2:</label>
+                                    <input type="number" id="admin-team2-yellow" class="form-control" min="0" placeholder="Opcional">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="checkbox-option" for="admin-team1-red">
+                                        <input type="checkbox" id="admin-team1-red" name="admin-team1-red">
+                                        <span>Roja para Equipo 1</span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-option" for="admin-team2-red">
+                                        <input type="checkbox" id="admin-team2-red" name="admin-team2-red">
+                                        <span>Roja para Equipo 2</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button id="admin-set-result-button" class="btn btn-primary">
+                                <span id="admin-button-text">Establecer Resultado</span>
+                                <div id="admin-button-spinner" class="button-spinner" style="display: none;">
+                                    <div class="spinner-small"></div>
+                                </div>
+                            </button>
+                            <p id="admin-result-message" class="message"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="admin-card glass-card-mini">
+                <h3 class="subsection-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Estadísticas Rápidas
+                </h3>
+                <div class="admin-stats-grid">
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h4>Partidos Pendientes</h4>
+                            <p id="admin-pending-matches" class="stat-value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h4>Apuestas Activas</h4>
+                            <p id="admin-active-bets" class="stat-value">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card-mini">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h4>Usuarios Totales</h4>
+                            <p id="admin-total-users" class="stat-value">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>IOSoccer Bets</h4>
+                    <p>La mejor plataforma de apuestas para IOSoccer Sudamérica</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitch"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Juego Responsable</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Estadísticas</h4>
+                    <div class="footer-stats">
+                        <div class="footer-stat">
+                            <span class="stat-number">1,234</span>
+                            <span class="stat-label">Usuarios Activos</span>
+                        </div>
+                        <div class="footer-stat">
+                            <span class="stat-number">5,678</span>
+                            <span class="stat-label">Apuestas Hoy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 IOSoccer Sudamérica. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
