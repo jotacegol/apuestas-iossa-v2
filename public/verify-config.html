@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Configuración</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            background: #1e1e1e; 
+            color: #00ff00; 
+            padding: 20px;
+        }
+        .check { margin: 10px 0; }
+        .ok { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffff00; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Verificación de Configuración</h1>
+    <div id="checks"></div>
+    
+    <script>
+        async function verify() {
+            const checks = document.getElementById('checks');
+            let html = '';
+            
+            // Check 1: URL actual
+            html += `<div class="check ok">✅ URL actual: ${window.location.origin}</div>`;
+            
+            // Check 2: Protocolo
+            const isHttps = window.location.protocol === 'https:';
+            html += `<div class="check ${isHttps ? 'ok' : 'error'}">
+                ${isHttps ? '✅' : '❌'} Protocolo: ${window.location.protocol} 
+                ${!isHttps ? '(Necesita HTTPS para cookies seguras)' : ''}
+            </div>`;
+            
+            // Check 3: Cookies habilitadas
+            const cookiesEnabled = navigator.cookieEnabled;
+            html += `<div class="check ${cookiesEnabled ? 'ok' : 'error'}">
+                ${cookiesEnabled ? '✅' : '❌'} Cookies: ${cookiesEnabled ? 'Habilitadas' : 'Deshabilitadas'}
+            </div>`;
+            
+            // Check 4: Test API endpoint
+            try {
+                const response = await fetch('/api/auth/status', {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                html += `<div class="check ok">✅ API responde: ${response.status}</div>`;
+                html += `<div class="check">📦 Respuesta: <pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                
+                // Check cookies enviadas
+                const cookieHeader = document.cookie;
+                html += `<div class="check">🍪 Cookies actuales: ${cookieHeader || 'Ninguna'}</div>`;
+                
+            } catch (error) {
+                html += `<div class="check error">❌ Error al conectar con API: ${error.message}</div>`;
+            }
+            
+            // Check 5: Discord OAuth URL
+            const discordUrl = `${window.location.origin}/auth/discord`;
+            html += `<div class="check">🔗 URL OAuth Discord: <a href="${discordUrl}" style="color: #00ffff">${discordUrl}</a></div>`;
+            
+            // Check 6: Callback URL esperada
+            const callbackUrl = `${window.location.origin}/auth/discord/callback`;
+            html += `<div class="check warning">⚠️ Asegúrate que esta URL esté en Discord Developer Portal:</div>`;
+            html += `<div class="check" style="background: #333; padding: 10px; margin: 10px 0;">
+                <code>${callbackUrl}</code>
+            </div>`;
+            
+            checks.innerHTML = html;
+        }
+        
+        verify();
+    </script>
+</body>
+</html>
