@@ -9,12 +9,14 @@
     "test": "node verify-setup.js",
     "verify": "node verify-setup.js",
     "debug-auth": "node debug-auth.js",
-    "build": "npm install",
-    "prestart": "npm run verify"
+    "debug-render": "node render-debug.js",
+    "build": "npm ci --only=production",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "dependencies": {
     "axios": "^1.11.0",
     "cheerio": "^1.1.2",
+    "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "discord.js": "^14.21.0",
@@ -40,6 +42,7 @@
   "author": "Tu Nombre",
   "license": "MIT",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
