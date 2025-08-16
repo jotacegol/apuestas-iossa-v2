@@ -24,6 +24,7 @@ const cors = require('cors');
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord').Strategy;
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
@@ -1686,7 +1687,9 @@ passport.deserializeUser(async (id, done) => {
 
 // Middleware
 app.use(cookieParser());
-app.use(session({
+
+// Configuración de sesiones con MongoStore en producción
+const sessionConfig = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -1697,7 +1700,21 @@ app.use(session({
         sameSite: 'lax'
     },
     name: 'discord-auth-session'
-}));
+};
+
+// Usar MongoStore solo en producción
+if (process.env.NODE_ENV === 'production') {
+    sessionConfig.store = MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        collectionName: 'sessions',
+        ttl: 24 * 60 * 60 // 1 día en segundos
+    });
+    console.log('✅ Usando MongoStore para sesiones en producción');
+} else {
+    console.log('⚠️  Usando MemoryStore para sesiones en desarrollo');
+}
+
+app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors());
