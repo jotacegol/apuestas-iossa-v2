@@ -4,7 +4,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -23,3 +23,6 @@ services:
         sync: false
       - key: PORT
         value: 10000
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
+    healthCheckPath: /
